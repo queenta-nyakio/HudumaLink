@@ -1,0 +1,104 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Service - HudumaLink</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">HudumaLink</div>
+        <div class="nav-links">
+            <a href="{{ url_for('user_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('find_services') }}">Find Services</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </nav>
+
+    <section class="dashboard-header">
+        <div class="dashboard-container">
+            <h1>Request a Service</h1>
+            <p>Submit your request to the selected provider.</p>
+        </div>
+    </section>
+
+    <section class="dashboard-section">
+        <div class="dashboard-container">
+
+            <div class="dashboard-card">
+                <h2>{{ service["service_name"] }}</h2>
+
+                <p>
+                    <strong>Provider:</strong>
+                    {{ service["provider_name"] }}
+                </p>
+
+                <p>
+                    <strong>Location:</strong>
+                    {{ service["location"] }}
+                </p>
+
+                <p>
+                    <strong>Listed price:</strong>
+                    {% if service["price"] is not none %}
+                        KES {{ "%.2f"|format(service["price"]) }}
+                    {% else %}
+                        Contact provider for pricing
+                    {% endif %}
+                </p>
+
+                <p>
+                    The final price can be agreed upon with the provider
+                    after they understand the work required.
+                </p>
+
+                <form method="POST"
+                      action="{{ url_for('request_service', service_id=service['id']) }}">
+
+                    <div class="form-group">
+                        <label for="request_description">
+                            Describe the work you need
+                        </label>
+
+                        <textarea
+                            id="request_description"
+                            name="request_description"
+                            rows="5"
+                            required
+                            placeholder="Explain the problem or service you need..."
+                        ></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="preferred_date">
+                            Preferred date (optional)
+                        </label>
+
+                        <input
+                            type="date"
+                            id="preferred_date"
+                            name="preferred_date"
+                        >
+                    </div>
+
+                    <button type="submit" class="dashboard-button">
+                        Submit Service Request
+                    </button>
+
+                </form>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2026 HudumaLink. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>

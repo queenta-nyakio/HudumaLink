@@ -1,0 +1,111 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Requests - HudumaLink</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">HudumaLink</div>
+        <div class="nav-links">
+            <a href="{{ url_for('user_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('find_services') }}">Find Services</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </nav>
+
+    <section class="dashboard-header">
+        <div class="dashboard-container">
+            <h1>My Service Requests</h1>
+            <p>Track your requests and review completed services.</p>
+        </div>
+    </section>
+
+    <section class="dashboard-section">
+        <div class="dashboard-container">
+
+            {% if requests %}
+
+                {% for item in requests %}
+
+                    <div class="dashboard-card">
+                        <h3>{{ item["service_name"] }}</h3>
+
+                        <p>
+                            <strong>Provider:</strong>
+                            {{ item["provider_name"] }}
+                        </p>
+
+                        <p>
+                            <strong>Location:</strong>
+                            {{ item["location"] }}
+                        </p>
+
+                        <p>
+                            <strong>Your request:</strong>
+                            {{ item["request_description"] }}
+                        </p>
+
+                        <p>
+                            <strong>Preferred date:</strong>
+                            {{ item["preferred_date"] or "Not specified" }}
+                        </p>
+
+                        <p>
+                            <strong>Status:</strong>
+                            {{ item["status"]|replace("_", " ")|title }}
+                        </p>
+
+                        <p>
+                            <strong>Submitted:</strong>
+                            {{ item["created_at"] }}
+                        </p>
+
+                        {% if item["status"]|lower == "completed" %}
+
+                            {% if not item["review_id"] %}
+                                <a href="{{ url_for('review_request', request_id=item['id']) }}"
+                                   class="dashboard-button">
+                                    Leave a Review
+                                </a>
+                            {% else %}
+                                <p class="review-complete">
+                                    <strong>Review submitted.</strong>
+                                    Thank you for your feedback!
+                                </p>
+                            {% endif %}
+
+                        {% endif %}
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="dashboard-card">
+                    <h3>No service requests yet</h3>
+                    <p>Find a provider and submit your first request.</p>
+
+                    <a href="{{ url_for('find_services') }}"
+                       class="dashboard-button">
+                        Find Services
+                    </a>
+                </div>
+
+            {% endif %}
+
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2026 HudumaLink. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>

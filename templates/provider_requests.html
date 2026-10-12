@@ -1,0 +1,140 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Requests | HudumaLink</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <h1>Customer Service Requests</h1>
+        <p>View and manage requests for your services.</p>
+
+        <a href="{{ url_for('provider_dashboard') }}"
+           class="dashboard-button">
+            Back to Dashboard
+        </a>
+
+        <hr>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <p class="flash-message {{ category }}">
+                        {{ message }}
+                    </p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% if requests %}
+            {% for item in requests %}
+                <div class="service-card">
+                    <h2>{{ item['service_name'] }}</h2>
+
+                    <p>
+                        <strong>Customer:</strong>
+                        {{ item['customer_name'] }}
+                    </p>
+
+                    <p>
+                        <strong>Phone:</strong>
+                        {{ item['customer_phone'] }}
+                    </p>
+
+                    <p>
+                        <strong>Service price:</strong>
+                        {% if item['price'] is not none %}
+                            KSh {{ "%.2f"|format(item['price']) }}
+                        {% else %}
+                            To be agreed
+                        {% endif %}
+                    </p>
+
+                    <p>
+                        <strong>Work requested:</strong><br>
+                        {{ item['request_description'] }}
+                    </p>
+
+                    <p>
+                        <strong>Preferred date:</strong>
+                        {{ item['preferred_date'] or 'Not specified' }}
+                    </p>
+
+                    <p>
+                        <strong>Request submitted:</strong>
+                        {{ item['request_date'] or 'Not available' }}
+                    </p>
+
+                    <p>
+                        <strong>Status:</strong>
+                        <span class="request-status">
+                            {{ item['status']|title }}
+                        </span>
+                    </p>
+
+                    {% if item['status'] == 'pending' %}
+                        <div class="request-actions">
+                            <form method="POST"
+                                  action="{{ url_for('update_request_status',
+                                                     request_id=item['id']) }}">
+                                <input type="hidden"
+                                       name="action"
+                                       value="accept">
+                                
+                                <button type="submit" name="action" value="accept" class="accept-button">
+                                    Accept Request
+                                </button>
+
+                            </form>
+
+                            <form method="POST"
+                                  action="{{ url_for('update_request_status',
+                                                     request_id=item['id']) }}"
+                                  onsubmit="return confirm('Are you sure you want to reject this request?');">
+                                <input type="hidden"
+                                       name="action"
+                                       value="reject">
+                                <button type="submit"
+                                        class="reject-button">
+                                    Reject Request
+                                </button>
+                            </form>
+                        </div>
+
+                    {% elif item['status'] == 'accepted' %}
+                        <form method="POST"
+                              action="{{ url_for('update_request_status',
+                                                 request_id=item['id']) }}"
+                              onsubmit="return confirm('Mark this job as completed?');">
+                            <input type="hidden"
+                                   name="action"
+                                   value="complete">
+                            <button type="submit">
+                                Mark as Completed
+                            </button>
+                        </form>
+
+                    {% elif item['status'] == 'completed' %}
+                        <p> This job has been completed.</p>
+
+                    {% elif item['status'] == 'rejected' %}
+                        <p>This request was rejected.</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+        {% else %}
+            <div class="empty-state">
+                <h2>No requests yet</h2>
+                <p>Customer service requests will appear here.</p>
+            </div>
+        {% endif %}
+    </div>
+
+</body>
+</html>

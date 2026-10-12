@@ -1,0 +1,146 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Provider Documents | HudumaLink</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .review-container {
+            max-width: 950px;
+            margin: 35px auto;
+            padding: 24px;
+        }
+
+        .provider-details,
+        .document-card {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 18px;
+        }
+
+        .document-card h3 {
+            margin-top: 0;
+        }
+
+        .document-link {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 10px 15px;
+            background: #0b5ed7;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+        }
+
+        .document-link:hover {
+            background: #084298;
+        }
+
+        .status {
+            font-weight: bold;
+            text-transform: capitalize;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .notice {
+            background: #fff3cd;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="review-container">
+        <a class="back-link" href="{{ url_for('admin_dashboard') }}">
+            &larr; Back to Admin Dashboard
+        </a>
+
+        <h1>Provider Document Review</h1>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="notice">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <section class="provider-details">
+            <h2>{{ provider['full_name'] }}</h2>
+            <p><strong>Email:</strong> {{ provider['email'] }}</p>
+            <p><strong>Phone:</strong> {{ provider['phone'] }}</p>
+            <p><strong>Location:</strong> {{ provider['location'] or 'Not provided' }}</p>
+            <p><strong>Description:</strong> {{ provider['description'] or 'Not provided' }}</p>
+            <p>
+                <strong>Provider status:</strong>
+                <span class="status">{{ provider['verification_status'] }}</span>
+            </p>
+            <p>
+                <strong>Document review status:</strong>
+                <span class="status">{{ provider['review_status'] or 'not submitted' }}</span>
+            </p>
+            <p><strong>Submitted:</strong> {{ provider['uploaded_at'] or 'Not recorded' }}</p>
+            <p><strong>Reviewed:</strong> {{ provider['reviewed_at'] or 'Not reviewed' }}</p>
+        </section>
+
+        <section class="document-card">
+            <h3>1. National ID — Front</h3>
+            {% if provider['id_front_path'] %}
+                <a class="document-link"
+                   href="{{ url_for('admin_provider_document_file', provider_id=provider['id'], document_type='id-front') }}"
+                   target="_blank" rel="noopener">
+                    Open Front of ID
+                </a>
+            {% else %}
+                <p>Front of ID has not been submitted.</p>
+            {% endif %}
+        </section>
+
+        <section class="document-card">
+            <h3>2. National ID — Back</h3>
+            {% if provider['id_back_path'] %}
+                <a class="document-link"
+                   href="{{ url_for('admin_provider_document_file', provider_id=provider['id'], document_type='id-back') }}"
+                   target="_blank" rel="noopener">
+                    Open Back of ID
+                </a>
+            {% else %}
+                <p>Back of ID has not been submitted.</p>
+            {% endif %}
+        </section>
+
+        <section class="document-card">
+            <h3>3. Proof of Service</h3>
+            {% if provider['proof_path'] %}
+                <p>
+                    <strong>Submitted filename:</strong>
+                    {{ provider['proof_original_name'] or 'Not recorded' }}
+                </p>
+                <a class="document-link"
+                   href="{{ url_for('admin_provider_document_file', provider_id=provider['id'], document_type='proof') }}"
+                   target="_blank" rel="noopener">
+                    Open Proof of Service
+                </a>
+            {% else %}
+                <p>Proof of service has not been submitted.</p>
+            {% endif %}
+        </section>
+
+        <p>
+            Review the documents before returning to the dashboard
+            to approve or reject the pending application.
+        </p>
+    </div>
+</body>
+</html>

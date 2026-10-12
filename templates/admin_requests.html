@@ -1,0 +1,72 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Requests - HudumaLink</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">HudumaLink Admin</div>
+        <div class="nav-links">
+            <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </nav>
+
+    <section class="dashboard-header">
+        <div class="dashboard-container">
+            <h1>Service Requests</h1>
+            <p>Welcome, {{ name }}. Monitor customer requests across the platform.</p>
+        </div>
+    </section>
+
+    <section class="dashboard-section">
+        <div class="dashboard-container">
+            <h2>All Requests ({{ requests|length }})</h2>
+
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Request ID</th>
+                            <th>Customer</th>
+                            <th>Service</th>
+                            <th>Provider</th>
+                            <th>Description</th>
+                            <th>Preferred Date</th>
+                            <th>Status</th>
+                            <th>Submitted</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in requests %}
+                        <tr>
+                            <td>{{ item["id"] }}</td>
+                            <td>{{ item["customer_name"] }}</td>
+                            <td>{{ item["service_name"] }}</td>
+                            <td>{{ item["provider_name"] }}</td>
+                            <td>{{ item["request_description"] or "No description" }}</td>
+                            <td>{{ item["preferred_date"] or "Not specified" }}</td>
+                            <td>{{ item["status"]|title }}</td>
+                            <td>{{ item["created_at"] or "Not recorded" }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="8">No service requests found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <p><a href="{{ url_for('admin_dashboard') }}">← Back to Admin Dashboard</a></p>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2026 HudumaLink. All rights reserved.</p>
+    </footer>
+</body>
+</html>

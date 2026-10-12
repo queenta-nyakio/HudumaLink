@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+```
+<title>Login - HudumaLink</title>
+
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}">
+```
+
+</head>
+
+<body>
+
+```
+<!-- Navigation -->
+<nav class="navbar">
+
+    <div class="logo">
+        HudumaLink
+    </div>
+
+    <div class="nav-links">
+
+        <a href="{{ url_for('home') }}">
+            Home
+        </a>
+
+        <a href="{{ url_for('register') }}">
+            Register
+        </a>
+
+    </div>
+
+</nav>
+
+
+<!-- Login Section -->
+<section class="form-section">
+
+    <div class="form-container">
+
+        <h1>Welcome Back</h1>
+
+        <p class="form-introduction">
+            Login to your HudumaLink account.
+        </p>
+
+
+        <!-- Display Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+
+                {% for category, message in messages %}
+
+                    <div class="alert {{ category }}">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+        {% endwith %}
+
+
+        <!-- Login Form -->
+        <form method="POST"
+              action="{{ url_for('login') }}">
+
+            <!-- Email -->
+            <div class="form-group">
+
+                <label for="email">
+                    Email Address
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Enter your email address"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Password -->
+            <div class="form-group">
+
+                <label for="password">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Enter your password"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Login Button -->
+            <button type="submit"
+                    class="form-button">
+
+                Login
+
+            </button>
+
+        </form>
+
+
+        <!-- Register Link -->
+        <p class="form-footer">
+
+            Don't have an account?
+
+            <a href="{{ url_for('register') }}">
+                Create an account
+            </a>
+
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- Footer -->
+<footer class="footer">
+
+    <p>
+        &copy; 2026 HudumaLink. All rights reserved.
+    </p>
+
+</footer>
+```
+
+</body>
+
+</html>

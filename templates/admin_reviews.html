@@ -1,0 +1,75 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reviews and Ratings - HudumaLink</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">HudumaLink Admin</div>
+        <div class="nav-links">
+            <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </nav>
+
+    <section class="dashboard-header">
+        <div class="dashboard-container">
+            <h1>Reviews &amp; Ratings</h1>
+            <p>Welcome, {{ name }}. Monitor customer feedback about service providers.</p>
+        </div>
+    </section>
+
+    <section class="dashboard-section">
+        <div class="dashboard-container">
+            <h2>Customer Reviews ({{ reviews|length }})</h2>
+
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Review ID</th>
+                            <th>Customer</th>
+                            <th>Service</th>
+                            <th>Provider</th>
+                            <th>Rating</th>
+                            <th>Comment</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for review in reviews %}
+                        <tr>
+                            <td>{{ review["id"] }}</td>
+                            <td>{{ review["customer_name"] }}</td>
+                            <td>{{ review["service_name"] }}</td>
+                            <td>{{ review["provider_name"] }}</td>
+                            <td>
+                                <span aria-label="{{ review['rating'] }} out of 5 stars">
+                                    {{ "★" * review["rating"] }}{{ "☆" * (5 - review["rating"]) }}
+                                </span>
+                                ({{ review["rating"] }}/5)
+                            </td>
+                            <td>{{ review["comment"] or "No written comment" }}</td>
+                            <td>{{ review["created_at"] or "Not recorded" }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="7">No customer reviews have been submitted yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <p><a href="{{ url_for('admin_dashboard') }}">← Back to Admin Dashboard</a></p>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2026 HudumaLink. All rights reserved.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,204 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Service | HudumaLink</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 30px 16px;
+            background: #f4f7fb;
+            color: #1f2937;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 5px 24px rgba(0, 0, 0, 0.07);
+        }
+
+        h1 { margin-top: 0; color: #0b5ed7; }
+        .intro { color: #64748b; line-height: 1.6; }
+
+        label {
+            display: block;
+            margin: 18px 0 7px;
+            font-weight: 600;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            font: inherit;
+            background: white;
+        }
+
+        textarea { min-height: 100px; resize: vertical; }
+
+        .help {
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-top: 6px;
+        }
+
+        button, .back {
+            display: inline-block;
+            margin-top: 22px;
+            padding: 12px 18px;
+            border: 0;
+            border-radius: 7px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        button { background: #0b5ed7; color: white; }
+        .back { background: #e8eef6; color: #1f2937; margin-left: 8px; }
+
+        .notice {
+            padding: 12px;
+            border-radius: 7px;
+            background: #eff6ff;
+            color: #1e40af;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 480px) {
+            .container { padding: 20px; }
+            .back { margin-left: 0; }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="container">
+        <h1>Add a Service</h1>
+        <p class="intro">
+            Welcome, {{ name }}. List a service and choose how you
+            charge customers. Be clear about what your price includes.
+        </p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <p class="notice">{{ message }}</p>
+            {% endfor %}
+        {% endwith %}
+
+        <form method="POST">
+            <label for="service_name">Service name *</label>
+            <input
+                id="service_name"
+                type="text"
+                name="service_name"
+                required
+                maxlength="120"
+                placeholder="e.g. Pipe Leak Repair"
+            >
+
+            <label for="description">Service description</label>
+            <textarea
+                id="description"
+                name="description"
+                placeholder="Explain what the service includes."
+            ></textarea>
+
+            <label for="pricing_type">Pricing method *</label>
+            <select id="pricing_type" name="pricing_type" required>
+                <option value="fixed">Fixed price</option>
+                <option value="starting_from">Starting from</option>
+                <option value="hourly">Hourly rate</option>
+                <option value="quotation">Request a quotation</option>
+            </select>
+
+            <div id="price-section">
+                <label for="price" id="price-label">Price (KES) *</label>
+                <input
+                    id="price"
+                    type="number"
+                    name="price"
+                    min="0.01"
+                    step="0.01"
+                    placeholder="e.g. 1500"
+                >
+                <p class="help" id="price-help">
+                    Enter the total price for the service.
+                </p>
+            </div>
+
+            <label for="pricing_notes">Pricing notes</label>
+            <textarea
+                id="pricing_notes"
+                name="pricing_notes"
+                maxlength="500"
+                placeholder="e.g. Materials charged separately; transport may cost extra."
+            ></textarea>
+            <p class="help">
+                Explain extra charges or conditions before customers request
+                the service.
+            </p>
+
+            <label for="availability">Availability *</label>
+            <select id="availability" name="availability" required>
+                <option value="Available">Available</option>
+                <option value="Unavailable">Unavailable</option>
+            </select>
+
+            <button type="submit">Save Service</button>
+            <a class="back" href="{{ url_for('provider_services') }}">
+                Back to My Services
+            </a>
+        </form>
+    </main>
+
+    <script>
+        const pricingType = document.getElementById("pricing_type");
+        const priceInput = document.getElementById("price");
+        const priceSection = document.getElementById("price-section");
+        const priceLabel = document.getElementById("price-label");
+        const priceHelp = document.getElementById("price-help");
+
+        function updatePricingFields() {
+            const type = pricingType.value;
+
+            if (type === "quotation") {
+                priceInput.required = false;
+                priceInput.value = "";
+                priceSection.style.display = "none";
+                return;
+            }
+
+            priceSection.style.display = "block";
+            priceInput.required = true;
+
+            if (type === "fixed") {
+                priceLabel.textContent = "Fixed price (KES) *";
+                priceHelp.textContent =
+                    "Enter the total advertised price for this service.";
+            } else if (type === "starting_from") {
+                priceLabel.textContent = "Starting price (KES) *";
+                priceHelp.textContent =
+                    "Enter the minimum advertised price. The final cost may vary.";
+            } else if (type === "hourly") {
+                priceLabel.textContent = "Price per hour (KES) *";
+                priceHelp.textContent =
+                    "Enter the hourly rate. Agree on the expected hours and total cost with the customer.";
+            }
+        }
+
+        pricingType.addEventListener("change", updatePricingFields);
+        updatePricingFields();
+    </script>
+</body>
+</html>

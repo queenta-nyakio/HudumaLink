@@ -1,0 +1,278 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Service - HudumaLink</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        .edit-form {
+            max-width: 700px;
+            margin: 30px auto;
+            padding: 25px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .edit-form label {
+            display: block;
+            margin-top: 18px;
+            margin-bottom: 7px;
+            font-weight: 600;
+        }
+
+        .edit-form input,
+        .edit-form textarea,
+        .edit-form select {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 11px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        .edit-form textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .save-button,
+        .cancel-button {
+            display: inline-block;
+            padding: 12px 18px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .save-button {
+            background: #198754;
+            color: white;
+        }
+
+        .cancel-button {
+            background: #6c757d;
+            color: white;
+        }
+
+        .flash-message {
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            background: #e8f5e9;
+            color: #1b5e20;
+        }
+
+        .help-text {
+            margin-top: 6px;
+            color: #555;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="logo">HudumaLink</div>
+
+        <div class="nav-links">
+            <a href="{{ url_for('provider_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('provider_services') }}">My Services</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </nav>
+
+    <section class="dashboard-header">
+        <div class="dashboard-container">
+            <h1>Edit Service</h1>
+            <p>Update your service details and pricing method.</p>
+        </div>
+    </section>
+
+    <section class="dashboard-section">
+        <div class="dashboard-container">
+
+            <form class="edit-form" method="POST">
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="flash-message">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <label for="service_name">Service Name</label>
+                <input
+                    type="text"
+                    id="service_name"
+                    name="service_name"
+                    value="{{ service['service_name'] }}"
+                    required
+                >
+
+                <label for="description">Description</label>
+                <textarea
+                    id="description"
+                    name="description"
+                >{{ service['description'] or '' }}</textarea>
+
+                <label for="pricing_type">Pricing Method</label>
+                <select id="pricing_type" name="pricing_type" required>
+                    <option value="fixed"
+                        {% if service['pricing_type'] == 'fixed' or not service['pricing_type'] %}
+                            selected
+                        {% endif %}>
+                        Fixed Price
+                    </option>
+
+                    <option value="starting_from"
+                        {% if service['pricing_type'] == 'starting_from' %}
+                            selected
+                        {% endif %}>
+                        Starting From
+                    </option>
+
+                    <option value="hourly"
+                        {% if service['pricing_type'] == 'hourly' %}
+                            selected
+                        {% endif %}>
+                        Hourly Rate
+                    </option>
+
+                    <option value="quotation"
+                        {% if service['pricing_type'] == 'quotation' %}
+                            selected
+                        {% endif %}>
+                        Request a Quotation
+                    </option>
+                </select>
+
+                <div class="help-text">
+                    Choose how customers should understand your price.
+                    Select quotation if you need to assess the job first.
+                </div>
+
+                <div id="price-container">
+                    <label for="price" id="price-label">Price (KSh)</label>
+
+                    <input
+                        type="number"
+                        id="price"
+                        name="price"
+                        min="0.01"
+                        step="0.01"
+                        value="{{ service['price'] if service['price'] is not none else '' }}"
+                    >
+
+                    <div class="help-text" id="price-help">
+                        Enter the amount you charge.
+                    </div>
+                </div>
+
+                <label for="pricing_notes">Pricing Notes (Optional)</label>
+                <textarea
+                    id="pricing_notes"
+                    name="pricing_notes"
+                    placeholder="Example: Transport costs are charged separately."
+                >{{ service['pricing_notes'] or '' }}</textarea>
+
+                <label for="availability">Availability</label>
+                <select id="availability" name="availability" required>
+                    <option value="Available"
+                        {% if service['availability'] == 'Available' %}
+                            selected
+                        {% endif %}>
+                        Available
+                    </option>
+
+                    <option value="Unavailable"
+                        {% if service['availability'] == 'Unavailable' %}
+                            selected
+                        {% endif %}>
+                        Unavailable
+                    </option>
+                </select>
+
+                <div class="form-actions">
+                    <button type="submit" class="save-button">
+                        Save Changes
+                    </button>
+
+                    <a href="{{ url_for('provider_services') }}"
+                       class="cancel-button">
+                        Cancel
+                    </a>
+                </div>
+
+            </form>
+
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2026 HudumaLink. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const pricingType = document.getElementById("pricing_type");
+        const priceInput = document.getElementById("price");
+        const priceLabel = document.getElementById("price-label");
+        const priceHelp = document.getElementById("price-help");
+        const priceContainer = document.getElementById("price-container");
+
+        function updatePricingFields() {
+            const type = pricingType.value;
+
+            if (type === "quotation") {
+                priceContainer.style.display = "none";
+                priceInput.required = false;
+                priceInput.value = "";
+                return;
+            }
+
+            priceContainer.style.display = "block";
+            priceInput.required = true;
+
+            if (type === "starting_from") {
+                priceLabel.textContent = "Starting Price (KSh)";
+                priceHelp.textContent =
+                    "Enter the minimum price from which the service starts.";
+            } else if (type === "hourly") {
+                priceLabel.textContent = "Hourly Rate (KSh)";
+                priceHelp.textContent =
+                    "Enter the amount charged per hour.";
+            } else {
+                priceLabel.textContent = "Fixed Price (KSh)";
+                priceHelp.textContent =
+                    "Enter the standard fixed price for this service.";
+            }
+        }
+
+        pricingType.addEventListener("change", updatePricingFields);
+        updatePricingFields();
+    </script>
+
+</body>
+</html>

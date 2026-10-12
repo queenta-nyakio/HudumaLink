@@ -1,0 +1,214 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Provider Dashboard - HudumaLink</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+
+        <div class="logo">
+            HudumaLink
+        </div>
+
+        <div class="nav-links">
+
+            <a href="{{ url_for('provider_dashboard') }}">
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('logout') }}">
+                Logout
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <!-- Dashboard Header -->
+    <section class="dashboard-header">
+
+        <div class="dashboard-container">
+
+            <h1>
+                Welcome, {{ name }}
+            </h1>
+
+            <p>
+                Manage your services, respond to customer requests,
+                and provide quality local services.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- Dashboard Content -->
+    <section class="dashboard-section">
+
+        <div class="dashboard-container">
+
+            <h2>
+                Service Provider Dashboard
+            </h2>
+
+            <div class="dashboard-cards">
+
+                <!-- My Services -->
+                <div class="dashboard-card">
+
+                    <div class="card-icon">
+                        🛠️
+                    </div>
+
+                    <h3>
+                        My Services
+                    </h3>
+
+                    <p>
+                        Add, manage and update the services
+                        you offer to customers, including prices
+                        and availability.
+                    </p>
+
+                    <a href="{{ url_for('provider_services') }}"
+                       class="dashboard-button">
+                        Manage Services
+                    </a>
+
+                </div>
+
+
+                <!-- Service Requests -->
+                <div class="dashboard-card">
+
+                    <div class="card-icon">
+                        📩
+                    </div>
+
+                    <h3>
+                        Service Requests
+                    </h3>
+
+                    <p>
+                        Review incoming customer requests,
+                        accept or reject pending requests,
+                        and mark accepted jobs as completed.
+                    </p>
+
+                    <a href="{{ url_for('provider_requests') }}"
+                       class="dashboard-button">
+                        View Requests
+                    </a>
+
+                </div>
+
+
+                <!-- My Profile -->
+                <div class="dashboard-card">
+
+                    <div class="card-icon">
+                        👤
+                    </div>
+
+                    <h3>
+                        My Profile
+                    </h3>
+
+                    <p>
+                        Manage the services and information
+                        customers use to learn about your work.
+                    </p>
+
+                    <a href="{{ url_for('provider_services') }}"
+                       class="dashboard-button">
+                        View My Services
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Provider Information -->
+    <section class="dashboard-info">
+
+        <div class="dashboard-container">
+
+            <h2>
+                Your Responsibilities
+            </h2>
+
+            <div class="info-steps">
+
+                <div>
+                    <strong>1. Manage Services</strong>
+
+                    <p>
+                        Keep your service descriptions, prices,
+                        and availability up to date.
+                    </p>
+                </div>
+
+                <div>
+                    <strong>2. Receive Requests</strong>
+
+                    <p>
+                        Check incoming requests and review the
+                        customer's description and preferred date.
+                    </p>
+                </div>
+
+                <div>
+                    <strong>3. Deliver Service</strong>
+
+                    <p>
+                        Accept suitable requests and coordinate
+                        with customers to provide the service.
+                    </p>
+                </div>
+
+                <div>
+                    <strong>4. Update Status</strong>
+
+                    <p>
+                        Mark accepted requests as completed after
+                        finishing the agreed work.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Footer -->
+    <footer class="footer">
+
+        <p>
+            &copy; 2026 HudumaLink. All rights reserved.
+        </p>
+
+    </footer>
+
+</body>
+
+</html>

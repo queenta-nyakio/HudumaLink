@@ -1,0 +1,355 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard - HudumaLink</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        .document-review-link {
+            display: inline-block;
+            margin-bottom: 10px;
+            padding: 9px 12px;
+            background: #0b5ed7;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .document-review-link:hover {
+            background: #084298;
+            color: #ffffff;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .action-buttons form {
+            margin: 0;
+        }
+
+        .document-note {
+            display: block;
+            margin-bottom: 8px;
+            color: #6c757d;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">
+            HudumaLink Admin
+        </div>
+
+        <div class="nav-links">
+            <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </nav>
+
+    <!-- Dashboard Header -->
+    <section class="dashboard-header">
+        <div class="dashboard-container">
+            <h1>Welcome, {{ name }}</h1>
+
+            <p>
+                Manage HudumaLink users, service providers,
+                services and requests.
+            </p>
+        </div>
+    </section>
+
+    <!-- Flash Messages -->
+    <section class="dashboard-section">
+        <div class="dashboard-container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash-message {{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+    </section>
+
+    <!-- Provider Verification -->
+    <section class="dashboard-section">
+        <div class="dashboard-container">
+
+            <h2>Service Provider Verification</h2>
+
+            <p class="section-description">
+                Review provider details and verification documents
+                before making an approval decision. Providers must
+                submit their identity documents and proof of service.
+            </p>
+
+            <div class="table-container">
+                <table class="data-table">
+
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                            <th>Documents</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for provider in providers %}
+                        <tr>
+                            <td>{{ provider["full_name"] }}</td>
+
+                            <td>{{ provider["email"] }}</td>
+
+                            <td>{{ provider["phone"] }}</td>
+
+                            <td>{{ provider["location"] }}</td>
+
+                            <!-- Provider Status -->
+                            <td>
+                                {% set status = provider["verification_status"] %}
+
+                                {% if status == "approved" %}
+                                    <span class="status approved">
+                                        Approved
+                                    </span>
+                                {% elif status == "pending" %}
+                                    <span class="status pending">
+                                        Pending
+                                    </span>
+                                {% elif status == "revoked" %}
+                                    <span class="status rejected">
+                                        Approval Revoked
+                                    </span>
+                                {% elif status == "rejected" %}
+                                    <span class="status rejected">
+                                        Rejected
+                                    </span>
+                                {% else %}
+                                    <span class="status pending">
+                                        {{ status|title }}
+                                    </span>
+                                {% endif %}
+                            </td>
+
+                            <!-- Secure Document Review -->
+                            <td>
+                                <a
+                                    class="document-review-link"
+                                    href="{{ url_for(
+                                        'admin_provider_documents',
+                                        provider_id=provider['id']
+                                    ) }}"
+                                >
+                                    Review Documents
+                                </a>
+
+                                <span class="document-note">
+                                    View submitted verification files
+                                </span>
+                            </td>
+
+                            <!-- Provider Actions -->
+                            <td>
+                                <div class="action-buttons">
+
+                                    {% if status == "pending" %}
+
+                                        <form
+                                            method="POST"
+                                            action="{{ url_for(
+                                                'approve_provider',
+                                                provider_id=provider['id']
+                                            ) }}"
+                                            onsubmit="return confirm('Approve this service provider?');"
+                                        >
+                                            <button
+                                                type="submit"
+                                                class="approve-button"
+                                            >
+                                                Approve
+                                            </button>
+                                        </form>
+
+                                        <form
+                                            method="POST"
+                                            action="{{ url_for(
+                                                'reject_provider',
+                                                provider_id=provider['id']
+                                            ) }}"
+                                            onsubmit="return confirm('Reject this service provider?');"
+                                        >
+                                            <button
+                                                type="submit"
+                                                class="reject-button"
+                                            >
+                                                Reject
+                                            </button>
+                                        </form>
+
+                                    {% elif status == "approved" %}
+
+                                        <form
+                                            method="POST"
+                                            action="{{ url_for(
+                                                'revoke_provider',
+                                                provider_id=provider['id']
+                                            ) }}"
+                                            onsubmit="return confirm('Revoke this provider approval?');"
+                                        >
+                                            <button
+                                                type="submit"
+                                                class="reject-button"
+                                            >
+                                                Revoke Approval
+                                            </button>
+                                        </form>
+
+                                    {% elif status == "rejected" %}
+
+                                        <span class="action-complete">
+                                            Awaiting provider resubmission
+                                        </span>
+
+                                    {% elif status == "revoked" %}
+
+                                        <span class="action-complete">
+                                            Contact provider before restoring access
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="action-complete">
+                                            No available actions
+                                        </span>
+
+                                    {% endif %}
+
+                                </div>
+                            </td>
+                        </tr>
+
+                        {% else %}
+                        <tr>
+                            <td colspan="7">
+                                No service providers found.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- System Management -->
+    <section class="dashboard-section">
+        <div class="dashboard-container">
+
+            <h2>System Management</h2>
+
+            <div class="dashboard-cards">
+
+                <!-- Users -->
+                <div class="dashboard-card">
+                    <div class="card-icon">👥</div>
+
+                    <h3>Manage Users</h3>
+
+                    <a href="{{ url_for('admin_users') }}"
+                       class="dashboard-button">
+                        View Users
+                    </a>
+
+                    <p>
+                        View and manage registered HudumaLink
+                        service users.
+                    </p>
+                </div>
+
+                <!-- Services -->
+                <div class="dashboard-card">
+                    <div class="card-icon">🛠️</div>
+
+                    <h3>Manage Services</h3>
+
+                    <a href="{{ url_for('admin_services') }}"
+                       class="dashboard-button">
+                        View Services
+                    </a>
+
+                    <p>
+                        Monitor services offered by approved
+                        service providers.
+                    </p>
+                </div>
+
+                <!-- Requests -->
+                <div class="dashboard-card">
+                    <div class="card-icon">📋</div>
+
+                    <h3>Service Requests</h3>
+
+                    <a href="{{ url_for('admin_requests') }}"
+                       class="dashboard-button">
+                        View Requests
+                    </a>
+
+                    <p>
+                        Monitor requests between service users
+                        and providers.
+                    </p>
+                </div>
+
+                <!-- Reviews -->
+                <div class="dashboard-card">
+                    <div class="card-icon">⭐</div>
+
+                    <h3>Reviews &amp; Ratings</h3>
+
+                    <a href="{{ url_for('admin_reviews') }}"
+                       class="dashboard-button">
+                        View Reviews
+                    </a>
+
+                    <p>
+                        Monitor ratings and reviews submitted
+                        by service users.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 HudumaLink. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>

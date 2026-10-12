@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ provider["full_name"] }} - HudumaLink</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        /* Provider profile layout */
+        .profile-card {
+            background: #ffffff;
+            padding: 28px;
+            margin-bottom: 35px;
+            border: 1px solid #edf0f4;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+        }
+
+        .profile-card h2 {
+            margin-bottom: 20px;
+            color: #0b5ed7;
+        }
+
+        .profile-info {
+            color: #5e6672;
+            line-height: 1.8;
+            overflow-wrap: anywhere;
+        }
+
+        .profile-info p {
+            margin-bottom: 12px;
+        }
+
+        .verified-label {
+            display: inline-block;
+            color: #146c43;
+            background: #dff5e8;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        /* Marketplace-style provider rating */
+        .provider-rating {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 16px 0;
+            color: #374151;
+            font-size: 14px;
+        }
+
+        .rating-stars {
+            position: relative;
+            display: inline-block;
+            flex-shrink: 0;
+            font-size: 26px;
+            line-height: 1;
+            letter-spacing: 2px;
+            white-space: nowrap;
+        }
+
+        .stars-empty {
+            color: #d1d5db;
+        }
+
+        .stars-filled {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            color: #f5b301;
+        }
+
+        .rating-score {
+            color: #1f2937;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .review-count {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .no-rating {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        /* Service cards */
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 24px;
+            margin-top: 20px;
+            align-items: stretch;
+        }
+
+        .service-card {
+            display: flex;
+            flex-direction: column;
+            background: #ffffff;
+            padding: 25px;
+            border: 1px solid #edf0f4;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+            transition: transform 0.2s ease,
+                        box-shadow 0.2s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .service-card h3 {
+            color: #0b5ed7;
+            margin-bottom: 12px;
+        }
+
+        .service-card p {
+            color: #5e6672;
+            margin-bottom: 13px;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .service-price {
+            color: #198754;
+            font-weight: bold;
+            font-size: 17px;
+        }
+
+        .availability-label {
+            display: inline-block;
+            width: fit-content;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background: #dff5e8;
+            color: #146c43;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .availability-unavailable {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .service-action {
+            margin-top: auto;
+            padding-top: 15px;
+        }
+
+        .service-action a {
+            display: block;
+            text-align: center;
+        }
+
+        .empty-services {
+            background: #ffffff;
+            border: 1px solid #edf0f4;
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 20px;
+            color: #64748b;
+        }
+
+        .back-link {
+            margin-top: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .service-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 600px) {
+            .service-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-card {
+                padding: 20px;
+            }
+
+            .service-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+
+        <div class="logo">
+            HudumaLink
+        </div>
+
+        <div class="nav-links">
+            <a href="{{ url_for('user_dashboard') }}">
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('find_services') }}">
+                Find Services
+            </a>
+
+            <a href="{{ url_for('my_requests') }}">
+                My Requests
+            </a>
+
+            <a href="{{ url_for('logout') }}">
+                Logout
+            </a>
+        </div>
+
+    </nav>
+
+    <!-- Provider Header -->
+    <section class="dashboard-header">
+
+        <div class="dashboard-container">
+
+            <h1>
+                {{ provider["full_name"] }}
+            </h1>
+
+            <p>
+                Verified HudumaLink Service Provider
+            </p>
+
+        </div>
+
+    </section>
+
+    <!-- Main Profile Content -->
+    <section class="dashboard-section">
+
+        <div class="dashboard-container">
+
+            <!-- Provider Information -->
+            <div class="profile-card">
+
+                <h2>
+                    Provider Information
+                </h2>
+
+                <div class="profile-info">
+
+                    <p>
+                        <strong>Location:</strong>
+                        {{ provider["location"] or "Not specified" }}
+                    </p>
+
+                    <p>
+                        <strong>Description:</strong>
+                        {{ provider["description"] or
+                           "No description has been provided." }}
+                    </p>
+
+                    <p>
+                        <strong>Verification:</strong>
+                        <span class="verified-label">
+                            ✓ Admin Approved
+                        </span>
+                    </p>
+
+                    <!-- Provider Rating -->
+                    <div class="provider-rating">
+
+                        <strong>Customer Rating:</strong>
+
+                        {% if provider["average_rating"] is not none
+                              and provider["review_count"]|int > 0 %}
+
+                            {% set rating = provider["average_rating"]|float %}
+                            {% set rating = [[rating, 0]|max, 5]|min %}
+
+                            <span class="rating-stars"
+                                  role="img"
+                                  aria-label="{{ '%.1f'|format(rating) }} out of 5 stars">
+
+                                <span class="stars-empty">
+                                    ★★★★★
+                                </span>
+
+                                <span class="stars-filled"
+                                      style="width: {{ (rating / 5 * 100)|round(2) }}%;">
+                                    ★★★★★
+                                </span>
+
+                            </span>
+
+                            <span class="rating-score">
+                                {{ "%.1f"|format(rating) }} / 5
+                            </span>
+
+                            <span class="review-count">
+                                ({{ provider["review_count"] }}
+                                {% if provider["review_count"]|int == 1 %}
+                                    review
+                                {% else %}
+                                    reviews
+                                {% endif %})
+                            </span>
+
+                        {% else %}
+
+                            <span class="no-rating">
+                                No ratings yet
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Services Offered -->
+            <h2>
+                Services Offered
+            </h2>
+
+            {% if services %}
+
+                <div class="service-grid">
+
+                    {% for service in services %}
+
+                        <article class="service-card">
+
+                            <h3>
+                                {{ service["service_name"] }}
+                            </h3>
+
+                            <p>
+                                {{ service["description"] or
+                                   "No service description available." }}
+                            </p>
+
+                            <p>
+                                <strong>Price:</strong><br>
+
+                                {% if service["price"] is not none %}
+                                    <span class="service-price">
+                                        KES {{ "%.2f"|format(service["price"]) }}
+                                    </span>
+                                {% else %}
+                                    Contact provider for pricing
+                                {% endif %}
+                            </p>
+
+                            <p>
+                                <strong>Availability:</strong><br>
+
+                                {% if service["availability"]|lower == "available" %}
+
+                                    <span class="availability-label">
+                                        Available
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="availability-label availability-unavailable">
+                                        {{ service["availability"] or "Not specified" }}
+                                    </span>
+
+                                {% endif %}
+                            </p>
+
+                            <!-- Request Button Belongs to This Service -->
+                            <div class="service-action">
+
+                                {% if service["availability"]|lower == "available" %}
+
+                                    <a href="{{ url_for('request_service', service_id=service['id']) }}"
+                                       class="dashboard-button">
+                                        Request This Service
+                                    </a>
+
+                                {% else %}
+
+                                    <span class="no-rating">
+                                        This service is currently unavailable.
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                        </article>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="empty-services">
+
+                    <h3>
+                        No Services Listed
+                    </h3>
+
+                    <p>
+                        This provider has not listed any services yet.
+                        Please check back later.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+            <!-- Back to Providers -->
+            <div class="back-link">
+
+                <a href="{{ url_for('find_services') }}"
+                   class="dashboard-button">
+                    ← Back to Providers
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+
+        <p>
+            &copy; 2026 HudumaLink. All rights reserved.
+        </p>
+
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | HudumaLink</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px 15px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #212529;
+        }
+
+        .register-container {
+            width: 100%;
+            max-width: 600px;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+        }
+
+        .brand {
+            margin-bottom: 8px;
+            text-align: center;
+            color: #0b5ed7;
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        h2 {
+            margin-top: 8px;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .subtitle {
+            margin-bottom: 25px;
+            text-align: center;
+            color: #6c757d;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 17px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: 600;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 15px;
+            background: #ffffff;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #0b5ed7;
+            box-shadow: 0 0 0 3px rgba(11, 94, 215, 0.12);
+        }
+
+        input[type="file"] {
+            padding: 9px;
+            background: #f8f9fa;
+        }
+
+        textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .section-heading {
+            margin: 25px 0 15px;
+            padding-bottom: 9px;
+            border-bottom: 1px solid #dee2e6;
+            color: #0b5ed7;
+            font-size: 18px;
+        }
+
+        .help-text {
+            display: block;
+            margin-top: 6px;
+            color: #6c757d;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .notice {
+            margin-bottom: 18px;
+            padding: 12px;
+            border-radius: 6px;
+            background: #e7f1ff;
+            color: #084298;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .flash-message {
+            margin-bottom: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            line-height: 1.5;
+        }
+
+        .flash-message.error {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        .flash-message.success {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .register-button {
+            width: 100%;
+            margin-top: 8px;
+            padding: 13px;
+            border: none;
+            border-radius: 6px;
+            background: #0b5ed7;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .register-button:hover {
+            background: #084298;
+        }
+
+        .login-link {
+            margin-top: 20px;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        a {
+            color: #0b5ed7;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .provider-fields[hidden] {
+            display: none !important;
+        }
+
+        @media (max-width: 480px) {
+            .register-container {
+                padding: 22px 18px;
+            }
+
+            .brand {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="register-container">
+
+        <div class="brand">HudumaLink</div>
+
+        <h2>Create Your Account</h2>
+
+        <p class="subtitle">
+            Register to find trusted service providers or offer
+            your professional services.
+        </p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message
+                        {% if category == 'error' %}error
+                        {% elif category == 'success' %}success
+                        {% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form
+            method="POST"
+            action="{{ url_for('register') }}"
+            enctype="multipart/form-data"
+        >
+
+            <div class="form-group">
+                <label for="full_name">Full Name</label>
+                <input
+                    type="text"
+                    id="full_name"
+                    name="full_name"
+                    autocomplete="name"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    autocomplete="email"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    autocomplete="tel"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="role">Account Type</label>
+                <select id="role" name="role" required>
+                    <option value="user" selected>
+                        Service User
+                    </option>
+                    <option value="provider">
+                        Service Provider
+                    </option>
+                </select>
+                <small class="help-text">
+                    Choose Service User if you want to find services.
+                    Choose Service Provider if you want to offer services.
+                </small>
+            </div>
+
+            <div id="provider-fields" class="provider-fields" hidden>
+
+                <h3 class="section-heading">
+                    Service Provider Information
+                </h3>
+
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input
+                        type="text"
+                        id="location"
+                        name="location"
+                        placeholder="e.g. Nyeri, Nairobi, or Kerugoya"
+                        autocomplete="address-level2"
+                        disabled
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="description">
+                        Description of Services
+                    </label>
+                    <textarea
+                        id="description"
+                        name="description"
+                        placeholder="Describe the services you provide"
+                        disabled
+                    ></textarea>
+                </div>
+
+                <h3 class="section-heading">
+                    Identity Verification
+                </h3>
+
+                <div class="notice">
+                    Upload the front and back of your identification
+                    document and evidence of your services. These
+                    documents are for administrator verification and
+                    must not be publicly accessible.
+                </div>
+
+                <div class="form-group">
+                    <label for="id_front">
+                        ID Front (Required)
+                    </label>
+                    <input
+                        type="file"
+                        id="id_front"
+                        name="id_front"
+                        accept=".jpg,.jpeg,.png,.pdf"
+                        disabled
+                    >
+                    <small class="help-text">
+                        Accepted formats: JPG, JPEG, PNG, or PDF.
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_back">
+                        ID Back (Required)
+                    </label>
+                    <input
+                        type="file"
+                        id="id_back"
+                        name="id_back"
+                        accept=".jpg,.jpeg,.png,.pdf"
+                        disabled
+                    >
+                    <small class="help-text">
+                        Accepted formats: JPG, JPEG, PNG, or PDF.
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label for="proof_document">
+                        Proof of Service (Required)
+                    </label>
+                    <input
+                        type="file"
+                        id="proof_document"
+                        name="proof_document"
+                        accept=".jpg,.jpeg,.png,.pdf,.doc,.docx"
+                        disabled
+                    >
+                    <small class="help-text">
+                        You may submit a relevant certificate, professional
+                        licence where applicable, CV, or other evidence
+                        of your services. Accepted formats: JPG, JPEG,
+                        PNG, PDF, DOC, or DOCX.
+                    </small>
+                </div>
+
+            </div>
+
+            <h3 class="section-heading">Account Security</h3>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    autocomplete="new-password"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="confirm_password">
+                    Confirm Password
+                </label>
+                <input
+                    type="password"
+                    id="confirm_password"
+                    name="confirm_password"
+                    autocomplete="new-password"
+                    required
+                >
+            </div>
+
+            <button type="submit" class="register-button">
+                Create Account
+            </button>
+
+        </form>
+
+        <p class="login-link">
+            Already have an account?
+            <a href="{{ url_for('login') }}">Log in here</a>
+        </p>
+
+        <p class="login-link">
+            <a href="{{ url_for('home') }}">Back to Home</a>
+        </p>
+
+    </main>
+
+    <script>
+        function showProviderFields() {
+            const roleSelect = document.getElementById("role");
+            const providerFields =
+                document.getElementById("provider-fields");
+
+            const isProvider = roleSelect.value === "provider";
+
+            providerFields.hidden = !isProvider;
+
+            const providerInputs = providerFields.querySelectorAll(
+                "input, textarea"
+            );
+
+            providerInputs.forEach(function (field) {
+                field.disabled = !isProvider;
+
+                if (
+                    field.id === "location" ||
+                    field.id === "id_front" ||
+                    field.id === "id_back" ||
+                    field.id === "proof_document"
+                ) {
+                    field.required = isProvider;
+                }
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const roleSelect = document.getElementById("role");
+
+            roleSelect.addEventListener(
+                "change",
+                showProviderFields
+            );
+
+            showProviderFields();
+        });
+    </script>
+</body>
+</html>

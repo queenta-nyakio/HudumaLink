@@ -1,0 +1,82 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Services - HudumaLink</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">HudumaLink Admin</div>
+        <div class="nav-links">
+            <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </nav>
+
+    <section class="dashboard-header">
+        <div class="dashboard-container">
+            <h1>Manage Services</h1>
+            <p>Welcome, {{ name }}. Monitor services listed on HudumaLink.</p>
+        </div>
+    </section>
+
+    <section class="dashboard-section">
+        <div class="dashboard-container">
+            <h2>Service Listings ({{ services|length }})</h2>
+
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Service</th>
+                            <th>Provider</th>
+                            <th>Location</th>
+                            <th>Price (KES)</th>
+                            <th>Pricing Method</th>
+                            <th>Availability</th>
+                            <th>Provider Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for service in services %}
+                        <tr>
+                            <td>{{ service["id"] }}</td>
+                            <td>
+                                <strong>{{ service["service_name"] }}</strong>
+                                <br>
+                                {{ service["description"] or "No description" }}
+                            </td>
+                            <td>{{ service["provider_name"] }}</td>
+                            <td>{{ service["provider_location"] }}</td>
+                            <td>
+                                {% if service["price"] is not none %}
+                                    {{ "%.2f"|format(service["price"]) }}
+                                {% else %}
+                                    By quotation
+                                {% endif %}
+                            </td>
+                            <td>{{ (service["pricing_type"] or "fixed")|replace("_", " ")|title }}</td>
+                            <td>{{ service["availability"] or "Not specified" }}</td>
+                            <td>{{ service["verification_status"]|title }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="8">No service listings found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <p><a href="{{ url_for('admin_dashboard') }}">← Back to Admin Dashboard</a></p>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2026 HudumaLink. All rights reserved.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>User Dashboard - HudumaLink</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+
+        <div class="logo">
+            HudumaLink
+        </div>
+
+        <div class="nav-links">
+
+            <a href="{{ url_for('user_dashboard') }}">
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('logout') }}">
+                Logout
+            </a>
+
+        </div>
+
+    </nav>
+
+    <!-- Dashboard Header -->
+    <section class="dashboard-header">
+
+        <div class="dashboard-container">
+
+            <h1>
+                Welcome, {{ name }}
+            </h1>
+
+            <p>
+                Find trusted local service providers and request
+                the services you need.
+            </p>
+
+        </div>
+
+    </section>
+
+    <!-- Dashboard Content -->
+    <section class="dashboard-section">
+
+        <div class="dashboard-container">
+
+            <h2>
+                What would you like to do?
+            </h2>
+
+            <div class="dashboard-cards">
+
+                <!-- Find Services -->
+                <div class="dashboard-card">
+
+                    <div class="card-icon">
+                        🔎
+                    </div>
+
+                    <h3>
+                        Find a Service
+                    </h3>
+
+                    <p>
+                        Browse approved local service providers,
+                        compare ratings, and choose the right provider.
+                    </p>
+
+                    <a href="{{ url_for('find_services') }}"
+                       class="dashboard-button">
+                        Find Services
+                    </a>
+
+                </div>
+
+                <!-- My Requests -->
+                <div class="dashboard-card">
+
+                    <div class="card-icon">
+                        📋
+                    </div>
+
+                    <h3>
+                        My Requests
+                    </h3>
+
+                    <p>
+                        View your service requests and monitor
+                        their progress.
+                    </p>
+
+                    
+                    <a href="{{ url_for('my_requests') }}"
+                      class="dashboard-button">
+                      My Requests
+                    </a>
+
+
+                </div>
+
+                <!-- Reviews -->
+                <div class="dashboard-card">
+
+                    <div class="card-icon">
+                        ⭐
+                    </div>
+
+                    <h3>
+                        My Reviews
+                    </h3>
+
+                    <p>
+                        Rate and review providers after your
+                        service has been completed.
+                    </p>
+
+                    <a href="{{ url_for('my_requests') }}"
+                      class="dashboard-button">
+                      My Requests
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- Information Section -->
+    <section class="dashboard-info">
+
+        <div class="dashboard-container">
+
+            <h2>
+                How HudumaLink Works
+            </h2>
+
+            <div class="info-steps">
+
+                <div>
+                    <strong>1. Search</strong>
+                    <p>Search for the service you need.</p>
+                </div>
+
+                <div>
+                    <strong>2. Choose</strong>
+                    <p>Select an approved service provider.</p>
+                </div>
+
+                <div>
+                    <strong>3. Request</strong>
+                    <p>Send your service request.</p>
+                </div>
+
+                <div>
+                    <strong>4. Review</strong>
+                    <p>Confirm completion and rate the provider.</p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+
+        <p>
+            &copy; 2026 HudumaLink. All rights reserved.
+        </p>
+
+    </footer>
+
+</body>
+</html>
